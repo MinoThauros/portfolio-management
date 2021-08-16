@@ -58,3 +58,14 @@ def maxdrawDown():
 def recent_maxdrawDown():
     print(drawDown()["1975":].idxmin())  # returns the index for the drawndown
     return drawDown()["1975":].min()
+
+
+# II- lets optimize the workflow for small cap
+
+def smalldarawDown(return_series: pd.series):
+    # 1: wealth index of the series assuming it's a file of gains in %
+    decimals = return_series/100
+    # using the 1+R notatin
+    wealth_index = (1+decimals["SmallCap"]).cummprod()
+    # derive previous peaks from wealth index
+    peaks = dr
