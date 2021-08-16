@@ -71,5 +71,6 @@ print("after cleanup")
 print(dataframe_cleanup(correct_format))
 # returns a product of every element; we caln also write (returns+1).prod-1
 compoundedReturn = np.prod(correct_format)
-# np.prod multiplies every element in the dataframe in format r+1 to get compounded returns
+# np.prod multiplies every element in the dataframe in format r+1 to get compounded returns of a numpy array
+# different technique for dataframes
 print(compoundedReturn)
