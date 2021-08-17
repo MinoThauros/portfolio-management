@@ -31,7 +31,10 @@ rets.loc["2018"].plot.line()
 
 def wealthIndex():
     # will compute the growth of a certain amount (here, 1000$) at the rate of the fund
-    temp = 1000*(1+rets["LargeCap"]).cumprod()#the % of growth is relatively to the precedent period
+    temp = 1000*(1+rets["LargeCap"]).cumprod()
+    #the % of growth is relatively to the precedent period
+    #so to  know how much the money has grown, it's the product of all preceding periods for the period
+    #including the period
     rounded_temp = temp.round(4)
     return rounded_temp
 
@@ -64,9 +67,28 @@ def recent_maxdrawDown():
 
 def smalldarawDown(return_series: pd.Series):
     # 1: wealth index of the series assuming it's a file of gains in %
-    decimals = return_series/100
     # using the 1+R notatin
-    wealth_index = (1+decimals["SmallCap"]).cummprod()
+    wealth_index = (1+return_series).cumprod()
     # derive previous peaks from wealth index
     peaks = wealth_index.cummax()
-    max_drawdowns=(wealth_index-peaks)/peaks #as a % of peaks
+    drawdowns=(wealth_index-peaks)/peaks #as a % of peaks; how much of the peak is lost
+    return pd.DataFrame({
+        "Wealth":wealth_index,
+        "Peaks":peaks,
+        "Drawdown":drawdowns,
+    })
+def drawdownz(series: pd.Series):
+    """Takes a time series of asset price.
+       returns a DataFrame with columns for 
+       the previous peaks, and 
+       the percentage drawdown
+    """
+    previous_peaks = series.cummax()
+    drawdowns = (series - previous_peaks)/previous_peaks
+    return pd.DataFrame({"series": series, 
+                         "Previous Peak": previous_peaks, 
+                         "Drawdown": drawdowns})
+
+print(drawdownz(rets["LargeCap"]).head())
+
+
