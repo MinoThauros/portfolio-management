@@ -7,7 +7,7 @@ prices_a_pandas = pd.DataFrame({
     "Orange-Stock": [10.6, 11.08, 10.71, 11.59, 12.11]
 })
 
-new_data = pd.read_csv("D:\Development\Portfolio management\data\Portfolios_Formed_on_ME_monthly_EW.csv",
+new_data = pd.read_csv("data\Portfolios_Formed_on_ME_monthly_EW.csv",
                        header=0, index_col=0, parse_dates=True, na_values=-99.99
                        # Header is in row 0; index_col in row 0; we wanna paser by dates
                        )

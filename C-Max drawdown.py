@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 pd.set_option('display.float_format', str)
 
-new_data = pd.read_csv("D:\Development\Portfolio management\data\Portfolios_Formed_on_ME_monthly_EW.csv",
+new_data = pd.read_csv("data\Portfolios_Formed_on_ME_monthly_EW.csv",
                        header=0, index_col=0, parse_dates=True, na_values=-99.99
                        )  # here
 
@@ -31,7 +31,7 @@ rets.loc["2018"].plot.line()
 
 def wealthIndex():
     # will compute the growth of a certain amount (here, 1000$) at the rate of the fund
-    temp = 1000*(1+rets["LargeCap"]).cumprod()
+    temp = 1000*(1+rets["LargeCap"]).cumprod()#the % of growth is relatively to the precedent period
     rounded_temp = temp.round(4)
     return rounded_temp
 
@@ -62,10 +62,11 @@ def recent_maxdrawDown():
 
 # II- lets optimize the workflow for small cap
 
-def smalldarawDown(return_series: pd.series):
+def smalldarawDown(return_series: pd.Series):
     # 1: wealth index of the series assuming it's a file of gains in %
     decimals = return_series/100
     # using the 1+R notatin
     wealth_index = (1+decimals["SmallCap"]).cummprod()
     # derive previous peaks from wealth index
-    peaks = dr
+    peaks = wealth_index.cummax()
+    max_drawdowns=(wealth_index-peaks)/peaks #as a % of peaks
