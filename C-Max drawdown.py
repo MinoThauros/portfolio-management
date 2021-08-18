@@ -5,7 +5,7 @@ pd.set_option('display.float_format', str)
 
 new_data = pd.read_csv("data\Portfolios_Formed_on_ME_monthly_EW.csv",
                        header=0, index_col=0, parse_dates=True, na_values=-99.99
-                       )  # here
+                       )
 
 rets = new_data[['Lo 10', 'Hi 10']]
 rets.columns = [['SmallCap', 'LargeCap']]
@@ -72,12 +72,24 @@ def drawdownz(series: pd.Series):
        the previous peaks, and 
        the percentage drawdown
     """
-    previous_peaks = series.cummax()
-    drawdowns = (series - previous_peaks)/previous_peaks
-    reslts = pd.concat([series, previous_peaks, drawdowns],
+    # series contains the year-on-year growth factor
+
+    wealth = 1000*(1+series).cumprod()
+    previous_peaks = wealth.cummax()  # we keep rising
+    # as a percentage of the previous peak
+    drawdowns = (wealth - previous_peaks)/previous_peaks
+    reslts = pd.concat([wealth, previous_peaks, drawdowns],
                        axis=1, join='inner')
-    reslts.columns = [['Series', 'Peaks', 'Drawdowns']]
-    return reslts
+    reslts.columns = [['Wealth', 'Peaks', 'Drawdowns']]
+    print('maxDrawDown is: ')
+    print(drawdowns.min())
+    print('in year: ')
+    print(drawdowns.idxmin())
+    return reslts.round(4)
 
 
-print(drawdownz(rets["SmallCap"]).head())
+# print(drawdownz(rets["LargeCap"]).head())
+print(drawdownz(rets["SmallCap"])[['Wealth', "Peaks"]].head())
+drawdownz(rets[:'1950']["SmallCap"])[['Wealth', "Peaks"]].plot()
+drawdownz(rets[:'1950']["LargeCap"])[['Wealth', "Peaks"]].plot()
+plt.show()
