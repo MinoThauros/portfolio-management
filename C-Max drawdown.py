@@ -22,7 +22,7 @@ rets.index = rets.index.to_period('M')
 
 
 # print(rets.loc["2018"])  # old way is deprecated
-rets.loc["2018"].plot.line()
+# rets.loc["2018"].plot.line()
 # plt.show()
 
 # let us now compute drawdown
@@ -32,9 +32,9 @@ rets.loc["2018"].plot.line()
 def wealthIndex():
     # will compute the growth of a certain amount (here, 1000$) at the rate of the fund
     temp = 1000*(1+rets["LargeCap"]).cumprod()
-    #the % of growth is relatively to the precedent period
-    #so to  know how much the money has grown, it's the product of all preceding periods for the period
-    #including the period
+    # the % of growth is relatively to the precedent period
+    # so to  know how much the money has grown, it's the product of all preceding periods for the period
+    # including the period
     rounded_temp = temp.round(4)
     return rounded_temp
 
@@ -65,18 +65,7 @@ def recent_maxdrawDown():
 
 # II- lets optimize the workflow for small cap
 
-def smalldarawDown(return_series: pd.Series):
-    # 1: wealth index of the series assuming it's a file of gains in %
-    # using the 1+R notatin
-    wealth_index = (1+return_series).cumprod()
-    # derive previous peaks from wealth index
-    peaks = wealth_index.cummax()
-    drawdowns=(wealth_index-peaks)/peaks #as a % of peaks; how much of the peak is lost
-    return pd.DataFrame({
-        "Wealth":wealth_index,
-        "Peaks":peaks,
-        "Drawdown":drawdowns,
-    })
+
 def drawdownz(series: pd.Series):
     """Takes a time series of asset price.
        returns a DataFrame with columns for 
@@ -85,10 +74,10 @@ def drawdownz(series: pd.Series):
     """
     previous_peaks = series.cummax()
     drawdowns = (series - previous_peaks)/previous_peaks
-    return pd.DataFrame({"series": series, 
-                         "Previous Peak": previous_peaks, 
-                         "Drawdown": drawdowns})
+    reslts = pd.concat([series, previous_peaks, drawdowns],
+                       axis=1, join='inner')
+    reslts.columns = [['Series', 'Peaks', 'Drawdowns']]
+    return reslts
 
-print(drawdownz(rets["LargeCap"]).head())
 
-
+print(drawdownz(rets["SmallCap"]).head())
